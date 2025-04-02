@@ -6,20 +6,33 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login extends AppCompatActivity {
     EditText etxt_emailAddress, etxt_password;
     Button btn_login;
     TextView txtbtn_goRegister;
 
-    boolean valid = false;
+    Boolean valid = false;
 
+    FirebaseAuth fAuth;
+
+    FirebaseFirestore fStore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +49,9 @@ public class Login extends AppCompatActivity {
         btn_login = findViewById(R.id.BTN_login);
         txtbtn_goRegister = findViewById(R.id.TXTBTN_goRegister);
 
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+
         txtbtn_goRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,6 +64,24 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 checkField(etxt_emailAddress);
                 checkField(etxt_password);
+
+                String email = etxt_emailAddress.getText().toString();
+                String pass = etxt_password.getText().toString();
+
+                if (valid){
+                    fAuth.signInWithEmailAndPassword(email,pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            Toast.makeText(Login.this, "Successfull Login", Toast.LENGTH_SHORT).show();
+                            checkUserAccess(authResult.getUser().getUid());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
@@ -61,4 +95,25 @@ public class Login extends AppCompatActivity {
         return valid;
     }
 
+    public void checkUserAccess(String uid)
+    {
+        DocumentReference df = fStore.collection("UserDetails72B").document(uid);
+
+        df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.getString("isAdmin") != null)
+                {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                }else
+                {
+                    startActivity(new Intent(getApplicationContext(), userDashboard.class));
+                    finish();
+                }
+
+            }
+        });
+    }
 }

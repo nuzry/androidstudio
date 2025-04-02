@@ -32,7 +32,7 @@ public class Register extends AppCompatActivity {
     EditText etxt_fullName, etxt_phone, etxt_emailAddress, etxt_password;
     Button btn_register;
     TextView txtbtn_goLogin;
-    boolean valid = false;
+    Boolean valid = false;
 
     FirebaseAuth fAuth;
 
@@ -99,8 +99,8 @@ public class Register extends AppCompatActivity {
                             userInfo.put("PhoneNumber", phone);
                             userInfo.put("EmailAddress", email);
                             userInfo.put("Password", pass);
-
-                            userInfo.put("isAdmin", "0");  //
+                            //LINE OF CODE FOR CREATING AN ADMIN ACCOUNT BY COMMENTING IT NORMAL USER ACCOUNT IS CREATED.
+                            //userInfo.put("isAdmin", "0");
 
                             df.set(userInfo);
 
