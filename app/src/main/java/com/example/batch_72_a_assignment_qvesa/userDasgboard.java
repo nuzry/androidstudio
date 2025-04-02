@@ -3,7 +3,6 @@ package com.example.batch_72_a_assignment_qvesa;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,20 +14,18 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
-
+public class userDasgboard extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_user_dasgboard);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
         ImageView img_signOut = findViewById(R.id.IMG_signOut);
         TextView txtBTN = findViewById(R.id.TXTBTN_signOut);
@@ -46,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
                 signOut();
             }
         });
-
     }
 
     public void signOut()
